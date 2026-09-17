@@ -16,22 +16,6 @@ jobs:
     name: Backend — Build & Test
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: test_root
-          MYSQL_DATABASE: ims_test
-          MYSQL_USER: ims_test
-          MYSQL_PASSWORD: ims_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root -ptest_root"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,9 +34,6 @@ jobs:
       - name: Run tests
         working-directory: backend
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ims_test?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-          SPRING_DATASOURCE_USERNAME: ims_test
-          SPRING_DATASOURCE_PASSWORD: ims_test
           JWT_SECRET: test-secret-key-for-ci-pipeline-do-not-use-in-production
         run: mvn test -B
 
@@ -154,3 +135,4 @@ jobs:
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          
